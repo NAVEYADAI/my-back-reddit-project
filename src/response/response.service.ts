@@ -13,7 +13,6 @@ import {
 import { PostService } from 'src/post/post.service';
 import { User } from 'src/user/user.entity';
 import { HugginFaceService } from 'src/huggin-face/huggin-face.service';
-import { UUID } from 'typeorm/driver/mongodb/bson.typings';
 
 @Injectable()
 export class ResponseService {
@@ -25,8 +24,11 @@ export class ResponseService {
   ) {}
 
   async getResponsesByPostId(postId: string, userId: number) {
-    const responsesToPost = await this.responceRepository.getResponsesByPostId(postId, userId);
-    return responsesToPost.map(result => ({
+    const responsesToPost = await this.responceRepository.getResponsesByPostId(
+      postId,
+      userId,
+    );
+    return responsesToPost.map((result) => ({
       id: result.response_id,
       createdAt: result.response_createdAt,
       description: result.response_description,
@@ -36,7 +38,7 @@ export class ResponseService {
       responseCount: result.responseCount,
       likeCount: result.likeCount,
       disLikeCount: result.disLikeCount,
-    }))
+    }));
   }
 
   async getAllResponses(): Promise<Response[]> {
@@ -45,42 +47,60 @@ export class ResponseService {
 
   async getResponseById(id: string): Promise<Response> {
     const response = await this.responceRepository.getResponseById(id);
-    const responseToSend: ResponseToSend = {...response, userName: response.user.userName}
+    const responseToSend: ResponseToSend = {
+      ...response,
+      userName: response.user.userName,
+    };
     return responseToSend;
   }
 
-  async getResponseToResponse(responseId: string, userId: number){
-    const responseToResponse = await this.responceRepository.getResponseToResponse(responseId, userId);
-    return responseToResponse.map(result => ({
+  async getResponseToResponse(responseId: string, userId: number) {
+    const responseToResponse =
+      await this.responceRepository.getResponseToResponse(responseId, userId);
+    return responseToResponse.map((result) => ({
       id: result.response_id,
       createdAt: result.response_createdAt,
       description: result.response_description,
       grade: result.response_grade,
-      responseTo:[],
+      responseTo: [],
       userName: result.userName,
       myLike: result.myLike,
       responseCount: result.responseCount,
       likeCount: result.likeCount,
       disLikeCount: result.disLikeCount,
-    }))
+    }));
   }
 
   async createResponseToPost(createResponseDto: CreateResponseDto) {
     const response = await this.saveResponseInDB(createResponseDto);
-    return this.postService.addResponseForPostByPostId(
+    await this.postService.addResponseForPostByPostId(
       createResponseDto.postId,
       response,
     );
+    return response
   }
 
   async createResponseToRespose(
     createResponseToResponse: CreateResponseToResponse,
   ) {
     const response = await this.saveResponseInDB(createResponseToResponse);
-    return this.createResponseToResponse(
+    console.log("in create response to response")
+    console.log(response)
+  //   return {
+  //     id: response.id,
+  //     createdAt: response.createdAt,
+  //     description: response.description,
+  //     responseCount: 0,
+  //     grade: response.grade,
+  //     myLike: null,
+  //     likeCount: 0,
+  //     disLikeCount: 0,
+  // }
+    await this.createResponseToResponse(
       createResponseToResponse.responseId,
       response,
     );
+    return response
   }
 
   async createResponseToResponse(
@@ -106,8 +126,9 @@ export class ResponseService {
   async createResponseToSave(
     createResponseDto: basicResponse,
   ): Promise<CreateResponseToSave> {
-    const grade = await this.hugging.createGradeByHugging(createResponseDto.description);
-
+    const grade = await this.hugging.createGradeByHugging(
+      createResponseDto.description,
+    );
     const user = new User();
     user.id = createResponseDto.userId;
     const responseToSave: CreateResponseToSave = {

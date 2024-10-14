@@ -2,7 +2,6 @@ import { DataSource, Like, Repository } from 'typeorm';
 import { Response } from './response.entity';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateResponseToSave, UpdateResponseDto } from './response.type';
-import { UUID } from 'typeorm/driver/mongodb/bson.typings';
 
 @Injectable()
 export class ResponseRepository extends Repository<Response> {
@@ -68,7 +67,6 @@ export class ResponseRepository extends Repository<Response> {
   async getResponseById(id: string): Promise<Response> {
     return await this.findOne({
       where: { id: id.toString() },
-      //  'responseTo.responseTo' 
       relations: ['responseTo' , 'user' , 'responseTo.responseTo' , 'responseTo.user' , 'responseTo.responseTo.responseTo'],
       order: {createdAt: 'desc'}
     });

@@ -15,6 +15,8 @@ import { Response } from 'src/response/response.entity';
 import { SubCategory } from 'src/sub-category/sub-category.entity';
 import { User } from 'src/user/user.entity';
 import { HugginFaceModule } from './huggin-face/huggin-face.module';
+import { AuthModule } from './auth/auth.module';
+import config from './config/config';
 
 @Module({
   imports: [
@@ -27,13 +29,13 @@ import { HugginFaceModule } from './huggin-face/huggin-face.module';
         Post,
         Response,
         SubCategory,
-        User
+        User,
       ],
       host: process.env.DATABASE_HOST,
       password: process.env.DATABASE_PASSWORD,
       port: +process.env.DATABASE_PORT,
       synchronize: true,
-      type: `postgres`,
+      type: `postgres` ,
       username: process.env.DATABASE_USERNAME
     }),
     UserModule,
@@ -43,6 +45,12 @@ import { HugginFaceModule } from './huggin-face/huggin-face.module';
     CategoryModule,
     SubCategoryModule,
     HugginFaceModule,
+    AuthModule,
+    ConfigModule.forRoot({
+      cache: true,
+      isGlobal: true,
+      load: [config],
+    }),
   ],
 })
 export class AppModule {}

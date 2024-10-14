@@ -1,6 +1,7 @@
 import { DataSource, Repository } from 'typeorm';
 import { Category } from './category.entity';
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { CreateCategory } from './category.type';
 
 @Injectable()
 export class CategoryRepository extends Repository<Category> {
@@ -20,8 +21,8 @@ export class CategoryRepository extends Repository<Category> {
     });
   }
 
-  async createCategory(name: string) {
-    return await this.save({ name })
+  async createCategory(createCategory: CreateCategory) {
+    return await this.save( createCategory )
   }
 
   async updateNameById(id: number, name: string) {

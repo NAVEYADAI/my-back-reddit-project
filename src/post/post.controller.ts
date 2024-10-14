@@ -8,12 +8,15 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { Post as PostEntity } from './post.entity';
 import { CreatePostDto, UpdatePostDto } from './post.type';
 import { HugginFaceService } from 'src/huggin-face/huggin-face.service';
+import { JwtAuthGuard } from 'src/user/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('post')
 export class PostController {
   constructor(

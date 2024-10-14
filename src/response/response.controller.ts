@@ -8,6 +8,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { ResponseService } from './response.service';
 import { Response } from './response.entity';
@@ -17,29 +18,25 @@ import {
   UpdateResponseDto,
 } from './response.type';
 import { Query } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/user/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('response')
 export class ResponseController {
   constructor(private responseService: ResponseService) {}
-
   @Get('/responseByPostId')
   async getResponsesByPostId(
     @Query('postId') postId: string,
-    @Query('userId', ParseIntPipe) userId: number
+    @Query('userId', ParseIntPipe) userId: number,
   ) {
-    console.log(postId)
-    console.log(userId)
     return await this.responseService.getResponsesByPostId(postId, userId);
   }
 
   @Get('/responseByResponseId')
   async getResponseToResponse(
     @Query('responseId') responseId: string,
-    @Query('userId', ParseIntPipe) userId: number
-    ){
-    //const responseId = "5615171c-15fd-4cf8-889e-d6f1735513ee"
-    console.log(responseId)
-    console.log(userId)
+    @Query('userId', ParseIntPipe) userId: number,
+  ) {
     return await this.responseService.getResponseToResponse(responseId, userId);
   }
 

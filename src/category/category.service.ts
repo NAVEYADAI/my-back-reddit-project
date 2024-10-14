@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { CategoryType } from './category.type';
+import { CategoryType, CreateCategory } from './category.type';
 import { NotFoundError } from 'rxjs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CategoryRepository } from './category.repository';
@@ -26,11 +26,11 @@ export class CategoryService {
     return await this.categoryRepository.getAllCatefories();
   }
 
-  async createCategory(name: string): Promise<Category> {
-    if (!name || name.trim() === '') {
+  async createCategory(createCategory: CreateCategory): Promise<Category> {
+    if (!createCategory.name || createCategory.name.trim() === '') {
       throw new BadRequestException('Category name should not be empty');
     }
-    return await this.categoryRepository.createCategory(name);
+    return await this.categoryRepository.createCategory(createCategory);
   }
 
   async updateCategoryName(id: number, name: string) {

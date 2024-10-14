@@ -9,6 +9,9 @@ export class Category {
   @Column()
   name: string;
 
+  @Column({nullable:true})
+  iconName: string;
+
   @OneToMany(() => SubCategory, (subCategory) => subCategory.category)
   subCategories: SubCategory[];
 }

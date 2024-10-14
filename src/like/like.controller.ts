@@ -7,11 +7,14 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { LikeService } from './like.service';
 import { Like } from './like.entity';
 import { ClickLikeOrDisLikeType, LikeDto, UpdateLikeDto } from './like.type';
+import { JwtAuthGuard } from 'src/user/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('like')
 export class LikeController {
   constructor(private likeService: LikeService) {}
